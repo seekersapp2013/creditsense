@@ -1,6 +1,6 @@
 import { Model } from 'radiks';
 
-export default class Customer extends Model {
+export default class Cusomter extends Model {
     static className = 'Customer';
 
     static schema = {

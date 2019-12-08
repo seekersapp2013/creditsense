@@ -8,10 +8,11 @@ import PropTypes from 'prop-types';
 import { User, getConfig } from 'radiks';
 
 import Text from '../styled/typography';
-import Message from '../models/Message';
-import Person from '../models/Person';
+import Customer from '../models/Customer';
+// import Person from '../models/Person';
 
 import Feed from '../components/feed';
+import Customers from '../components/Customers';
 
 class Home extends React.Component {
   static propTypes = {
@@ -22,7 +23,7 @@ class Home extends React.Component {
 
   state = {
     currentUser: null,
-    messages: [],
+    customers: [],
   }
 
   static async getInitialProps() {
@@ -38,12 +39,12 @@ class Home extends React.Component {
       const currentUser = userSession.loadUserData();
       this.setState({ currentUser });
 
-      const messages = await Message.fetchList({
+      const customers = await Customer.fetchOwnList({
         sort: '-createdAt',
         limit: 10,
-      }, { decrypt: true });
-      console.log({messages})
-      this.setState({messages})
+      }, { decrypt: false });
+      console.log({customers});
+      this.setState({customers});
     } else if (userSession.isSignInPending()) {
       const currentUser = await userSession.handlePendingSignIn();
       await User.createWithCurrentUser();
@@ -65,8 +66,8 @@ class Home extends React.Component {
   }
 
   render() {
-    const { currentUser, messages } = this.state;
-    console.log({messages})
+    const { currentUser, customers } = this.state;
+    console.log({customers})
     return (
       <>
         <Flex>
@@ -80,7 +81,8 @@ class Home extends React.Component {
                   {'. '}
                   <a href="javascript:void(0)" onClick={this.logout}>Log Out</a>
                 </Text.small>
-                <Feed messages={messages} />
+                <Feed customers={customers} />
+                <Customers customers={customers} />
               </>
             ) : (
               <>

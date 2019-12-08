@@ -5,22 +5,22 @@ import { User } from 'radiks';
 
 import Text from '../styled/typography';
 import Input from '../styled/input';
-import Message from '../models/Message';
-import Transaction from '../models/Transaction';
+import Customer from '../models/Customer';
 // import Person from '../models/Person';
 
 
 
 export default class Feed extends React.Component {
   static propTypes = {
-    messages: PropTypes.array,
+    customers: PropTypes.array,
   }
 
   static defaultProps = {
-    messages: [],
+    customers: [],
   }
 
   state = {
+    creditorMVN:'',
     name: '',
     age:'',
     phone:'',
@@ -29,78 +29,46 @@ export default class Feed extends React.Component {
     bType: '',
     sales:'',
     kinName:'',
-    guarantor: '',
-    guarantorAddress: '',
-    guarantorBusiness: '',
-    newMessage: '',
-    guarantorPhone: '',
+    gurantor: '',
+    gurantorAddress: '',
+    gurantorBusiness: '',
+    gurantorPhone: '',
     loanAmount:'',
     customerSignature:'',
-    guarantorSignature:'',
+    gurantorSignature:'',
     debtHistory:'',
-    createdMessageIDs: {},
-    createdTransactionIDs: {},
-    messages: [],
+    createdAgentIDs: {},
+    customers: [],
     currentUser: null,
-    meetingDay: '',
-    mainSavings: '', 
-    disbursementDate: '', 
-    schemeName: '', 
-    loanType: '', 
-    serviceCharge: '', 
-    serviceCharge2: '', 
-    totalInstallments: '', 
-    amountPayable: '', 
-    date: '', 
-    manDeposit: '', 
-    volDeposit: '', 
-    interestSavings: '', 
-    withdrawal: '', 
-    balance: '', 
-    installmentNumber: '', 
-    repayment: '', 
-    balance2: '', 
-
   }
 
   componentWillMount() {
-    const rawMessages = this.props.messages;
-    const messages = rawMessages.map(messageData => new Message(messageData.attrs));
-    this.setState({ messages });
+    const rawCustomers = this.props.customers;
+    const customers = rawCustomers.map(customerData => new Customer(customerData.attrs));
+    this.setState({ customers });
   }
 
   componentDidMount() {
     this.setState({
       currentUser: User.currentUser(),
     });
-    Message.addStreamListener(this.newMessageListener.bind(this));
+    // Customer.addStreamListener(this.newCustomerListener.bind(this));
     // Person.addStreamListener(this.newPersonListener.bind(this));
-    Transaction.addStreamListener(this.newTransactionListener.bind(this));
   }
 
 
   componentWillReceiveProps(newProps) {
-    const rawMessages = newProps.messages;
-    const messages = rawMessages.map(messageData => new Message(messageData.attrs));
-    this.setState({ messages });
-    // const rawTransactions = newProps.Transactions;
-    // const Transaction = rawTransactions.map(transactionData => new Transaction(transactionData.attrs));
-    // this.setState({ transactions });
+    const rawCustomers = newProps.customers;
+    const customers = rawCustomers.map(customerData => new Customer(customerData.attrs));
+    this.setState({ customers });
   }
 
-  newMessageListener(message) {
-    const { messages } = this.state;
-    if (!this.state.createdMessageIDs[message._id]) {
-      messages.unshift(message);
-      this.setState({ messages });
-    }
-  }
 
-  newTransactionListener(transaction) {
-    const { transactions } = this.state;
-    if (!this.state.createdTransactionIDs[transaction._id]) {
-      transactions.unshift(transaction);
-      this.setState({ transactions });
+  newCustomerListener(customer) {
+    const { customers } = this.state;
+    if (!this.state.createdAgentIDs[customer._id]) {
+      customers.unshift(customer);
+      this.setState({ customers });
     }
   }
 
@@ -113,9 +81,10 @@ export default class Feed extends React.Component {
   // }
 
   async submit() {//Next line is important
-    const { newMessage, name, age, phone, address, bName, bType, sales, kinName, guarantor, guarantorAddress, guarantorBusiness, guarantorPhone, loanAmount, customerSignature, guarantorSignature, debtHistory, mainSavings, disbursementDate, schemeName, loanType, serviceCharge, serviceCharge2, totalInstallments, amountPayable, date, manDeposit, volDeposit, interestSavings, withdrawal, balance, installmentNumber, repayment, balance2,   } = this.state;
-    const message = new Message({
-      content: newMessage,
+    const { newCustomer, creditorMVN, name, age, phone, address, bName, bType, sales, kinName, gurantor, gurantorAddress, gurantorBusiness, gurantorPhone, loanAmount, customerSignature,gurantorSignature, debtHistory  } = this.state;
+    const customer = new Customer({
+      content: newCustomer,
+      creditorMVN: creditorMVN,
       creditorName: name,
       age: age,
       phone:phone,
@@ -123,252 +92,32 @@ export default class Feed extends React.Component {
       bName: bName,
       bType: bType,
       sales: sales,
-      kinName: kinName,
-      guarantor: guarantor,
-      guarantorAddress: guarantorAddress,
-      guarantorBusiness: guarantorBusiness,
-      guarantorPhone: guarantorPhone,
-      loanAmount: loanAmount,
-      customerSignature: customerSignature,
-      guarantorSignature: guarantorSignature,
-      debtHistory: debtHistory,
-      mainSavings: mainSavings, 
-      disbursementDate: disbursementDate, 
-      schemeName: schemeName, 
-      loanType: loanType, 
-      serviceCharge: serviceCharge, 
-      serviceCharge2: serviceCharge2, 
-      totalInstallments: totalInstallments, 
-      amountPayable: amountPayable, 
-      date: date, 
-      manDeposit: manDeposit, 
-      volDeposit: volDeposit, 
-      interestSavings: interestSavings, 
-      withdrawal: withdrawal, 
-      balance: balance, 
-      installmentNumber: installmentNumber, 
-      repayment: repayment, 
-      balance2: balance2, 
+      kinName:kinName,
+      gurantor:gurantor,
+      gurantorAddress:gurantorAddress,
+      gurantorBusiness:gurantorBusiness,
+      gurantorPhone:gurantorPhone,
+      loanAmount:loanAmount,
+      customerSignature:customerSignature,
+      gurantorSignature:gurantorSignature,
+      debtHistory:debtHistory,
       createdBy: this.state.currentUser._id,
     });
-    const { messages, createdMessageIDs } = this.state;
-    messages.unshift(message);
-    createdMessageIDs[message._id] = true;
-    this.setState({ messages, createdMessageIDs, newMessage: '' });
-    await message.save();
+    const { customers, createdAgentIDs } = this.state;
+    customers.unshift(customer);
+    createdAgentIDs[customer._id] = true;
+    this.setState({ customers, createdAgentIDs, newCustomer: '' });
+    await customer.save();
   }
-  
-  async submit2() {//Next line is important
-  const { newTransaction, meetingDay,mainSavings, disbursementDate, schemeName, loanType, serviceCharge, serviceCharge2, totalInstallments, amountPayable, date, manDeposit, volDeposit, interestSavings, withdrawal, balance, installmentNumber, repayment, balance2, agentSignature  } = this.state;
-    const transaction = new Transaction({
-      content: newTransaction,
-      meetingDay: meetingDay,
-      mainSavings: mainSavings, 
-      disbursementDate: disbursementDate, 
-      schemeName: schemeName, 
-      loanType: loanType, 
-      serviceCharge: serviceCharge, 
-      serviceCharge2: serviceCharge2, 
-      totalInstallments: totalInstallments, 
-      amountPayable: amountPayable, 
-      date: date, 
-      manDeposit: manDeposit, 
-      volDeposit: volDeposit, 
-      interestSavings: interestSavings, 
-      withdrawal: withdrawal, 
-      balance: balance, 
-      installmentNumber: installmentNumber, 
-      repayment: repayment, 
-      balance2: balance2, 
-      createdBy: this.state.currentUser._id,
-    });
-    const { transactions, createdTransactionIDs } = this.state;
-    transactions.unshift(transaction);
-    createdTransactionIDs[transaction._id] = true;
-    this.setState({ transactions, createdTransactionIDs, newTransaction: '' });
-    await transaction.save();
-  }
-  
-  messages() {
-    return this.state.messages.map(message => (
-      <div key={message._id}>
+
+  customers() {
+    return this.state.customers.map(customer => (
+      <div key={customer._id}>
         <Text.p mt={4} mb={1}>
-          {message.attrs.createdBy}
+          {customer.attrs.createdBy}
           {' '}
           says:
         </Text.p>
-        <Text.em>{message.attrs.creditorName}</Text.em>
-        <Text.em>{message.attrs.age}</Text.em>
-        <Text.em>{message.attrs.phone}</Text.em>
-        <Text.em>{message.attrs.address}</Text.em>
-        <Text.em>{message.attrs.bName}</Text.em>
-        <Text.em>{message.attrs.bType}</Text.em>
-        <Text.em>{message.attrs.sales}</Text.em>
-        <Text.em>{message.attrs.kinName}</Text.em>
-        <Text.em>{message.attrs.guarantor}</Text.em>
-        <Text.em>{message.attrs.guarantorAddress}</Text.em>
-        <Text.em>{message.attrs.guarantorBusiness}</Text.em>
-        <Text.em>{message.attrs.guarantorPhone}</Text.em>
-        <Text.em>{message.attrs.loanAmount}</Text.em>
-        <Text.em>{message.attrs.customerSignature}</Text.em>
-        <Text.em>{message.attrs.guarantorSignature}</Text.em>
-        <Text.em>{message.attrs.debtHistory}</Text.em>
-        <Text.em>{message.attrs.content}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="mainSavings"
-          value={this.state.mainSavings}
-          onChange={evt => this.setState({ mainSavings: evt.target.value })}
-        />
-        Main Savings: <Text.em>{message.attrs.mainSavings}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="disbursementDate"
-          value={this.state.disbursementDate}
-          onChange={evt => this.setState({ disbursementDate: evt.target.value })}
-        />
-        Disbursement Date: <Text.em>{message.attrs.disbursementDate}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="Scheme Name"
-          value={this.state.schemeName}
-          onChange={evt => this.setState({ schemeName: evt.target.value })}
-        />
-        Scheme Name: <Text.em>{message.attrs.schemeName}</Text.em>
-       
-        <Input
-          mt={3}
-          width={1}
-          placeholder="loanType"
-          value={this.state.loanType}
-          onChange={evt => this.setState({ loanType: evt.target.value })}
-        />
-        Scheme Name: <Text.em>{message.attrs.loanType}</Text.em>
-       
-        <Input
-          mt={3}
-          width={1}
-          placeholder="loanType"
-          value={this.state.loanType}
-          onChange={evt => this.setState({ loanType: evt.target.value })}
-        />
-        loanType: <Text.em>{message.attrs.loanType}</Text.em>
-        
-        <Input
-          mt={3}
-          width={1}
-          placeholder="serviceCharge"
-          value={this.state.serviceCharge}
-          onChange={evt => this.setState({ serviceCharge: evt.target.value })}
-        />
-        serviceCharge: <Text.em>{message.attrs.serviceCharge}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="serviceCharge2"
-          value={this.state.serviceCharge2}
-          onChange={evt => this.setState({ serviceCharge2: evt.target.value })}
-        />
-        serviceCharge2: <Text.em>{message.attrs.serviceCharge2}</Text.em>
-       
-        <Input
-          mt={3}
-          width={1}
-          placeholder="totalInstallments"
-          value={this.state.totalInstallments}
-          onChange={evt => this.setState({ totalInstallments: evt.target.value })}
-        />
-        totalInstallments: <Text.em>{message.attrs.totalInstallments}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="amountPayable"
-          value={this.state.amountPayable}
-          onChange={evt => this.setState({ amountPayable: evt.target.value })}
-        />
-        amountPayable: <Text.em>{message.attrs.amountPayable}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="date"
-          value={this.state.date}
-          onChange={evt => this.setState({ date: evt.target.value })}
-        />
-        date: <Text.em>{message.attrs.date}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="manDeposit"
-          value={this.state.manDeposit}
-          onChange={evt => this.setState({ manDeposit: evt.target.value })}
-        />
-        manDeposit: <Text.em>{message.attrs.manDeposit}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="volDeposit"
-          value={this.state.volDeposit}
-          onChange={evt => this.setState({ volDeposit: evt.target.value })}
-        />
-        volDeposit: <Text.em>{message.attrs.volDeposit}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="interestSavings"
-          value={this.state.interestSavings}
-          onChange={evt => this.setState({ interestSavings: evt.target.value })}
-        />
-        interestSavings: <Text.em>{message.attrs.interestSavings}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="withdrawal"
-          value={this.state.withdrawal}
-          onChange={evt => this.setState({ withdrawal: evt.target.value })}
-        />
-        withdrawal: <Text.em>{message.attrs.withdrawal}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="balance"
-          value={this.state.balance}
-          onChange={evt => this.setState({ balance: evt.target.value })}
-        />
-        balance: <Text.em>{message.attrs.balance}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="installmentNumber"
-          value={this.state.installmentNumber}
-          onChange={evt => this.setState({ installmentNumber: evt.target.value })}
-        />
-        installmentNumber: <Text.em>{message.attrs.installmentNumber}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="repayment"
-          value={this.state.repayment}
-          onChange={evt => this.setState({ repayment: evt.target.value })}
-        />
-        repayment: <Text.em>{message.attrs.repayment}</Text.em>
-        <Input
-          mt={3}
-          width={1}
-          placeholder="balance2"
-          value={this.state.balance2}
-          onChange={evt => this.setState({ balance2: evt.target.value })}
-        />
-        balance2: <Text.em>{message.attrs.balance2}</Text.em>
-        <br></br>
-
-        Recorded By: <Text.em>{message.attrs.createdBy}</Text.em>                                                                                                                                                                    
-        <br></br>
-        <Button onClick={() => this.submit()} mt={2}>
-            Submit2
-          </Button>
 
       </div>
     ));
@@ -381,6 +130,14 @@ export default class Feed extends React.Component {
           <Text.p textAlign="center">
             Create Customer
           </Text.p>
+          
+          <Input
+            mt={3}
+            width={1}
+            placeholder="BVN Number"
+            value={this.state.creditorMVN}
+            onChange={evt => this.setState({ creditorMVN: evt.target.value })}
+          />
 
           <Input
             mt={3}
@@ -443,37 +200,37 @@ export default class Feed extends React.Component {
           <Input
             mt={3}
             width={1}
-            placeholder="guarantor"
-            value={this.state.guarantor}
-            onChange={evt => this.setState({ guarantor: evt.target.value })}
+            placeholder="Gurantor"
+            value={this.state.gurantor}
+            onChange={evt => this.setState({ gurantor: evt.target.value })}
           />
           <Input
             mt={3}
             width={1}
-            placeholder="guarantor Address"
-            value={this.state.guarantorAddress}
-            onChange={evt => this.setState({ guarantorAddress: evt.target.value })}
+            placeholder="Gurantor Address"
+            value={this.state.gurantorAddress}
+            onChange={evt => this.setState({ gurantorAddress: evt.target.value })}
           />
           <Input
             mt={3}
             width={1}
-            placeholder="guarantor Business"
-            value={this.state.guarantorBusiness}
-            onChange={evt => this.setState({ guarantorBusiness: evt.target.value })}
+            placeholder="Gurantor Business"
+            value={this.state.gurantorBusiness}
+            onChange={evt => this.setState({ gurantorBusiness: evt.target.value })}
           />
           <Input
             mt={3}
             width={1}
-            placeholder="guarantor Phone"
-            value={this.state.guarantorPhone}
-            onChange={evt => this.setState({ guarantorPhone: evt.target.value })}
+            placeholder="Gurantor Phone"
+            value={this.state.gurantorPhone}
+            onChange={evt => this.setState({ gurantorPhone: evt.target.value })}
           />
           <Input
             mt={3}
             width={1}
-            placeholder="guarantor Signature"
-            value={this.state.guarantorSignature}
-            onChange={evt => this.setState({ guarantorSignature: evt.target.value })}
+            placeholder="Gurantor Signature"
+            value={this.state.gurantorSignature}
+            onChange={evt => this.setState({ gurantorSignature: evt.target.value })}
           />
 
           <Input
@@ -501,24 +258,15 @@ export default class Feed extends React.Component {
             mt={3}
             width={1}
             placeholder="What do you have to say?"
-            value={this.state.newMessage}
-            onChange={evt => this.setState({ newMessage: evt.target.value })}
+            value={this.state.newCustomer}
+            onChange={evt => this.setState({ newCustomer: evt.target.value })}
           /> */}
           
           <Button onClick={() => this.submit()} mt={2}>
             Submit
           </Button>
 
-          {this.messages()}
-
-          <Text.p textAlign="center">
-            Only showing the most recent
-            {' '}
-            {this.state.messages.length}
-            {' '}
-            customers.
-          </Text.p>
-        </Box>
+         </Box>
       </Flex>
     );
   }
