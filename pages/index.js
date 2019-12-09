@@ -11,6 +11,7 @@ import Text from '../styled/typography';
 import Customer from '../models/Customer';
 // import Person from '../models/Person';
 
+
 import Feed from '../components/feed';
 import Customers from '../components/Customers';
 
