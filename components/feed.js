@@ -126,16 +126,7 @@ export default class Feed extends React.Component {
   render() {
     return (
       <Flex>
-          <Box
-    p={3}
-    width={1/2}
-    color='white'
-    bg='primary'>
-    Flex
-  </Box>
         <Box width={[1, 1 / 2]} mx="auto" textAlign="center">
-
-          
           <Text.p textAlign="center">
             Create Customer
           </Text.p>

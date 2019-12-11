@@ -10,6 +10,16 @@ const Input = Styled.input`
   padding-left: 10px;
   display: inline-block;
   border: 1px solid gray;
+  margin: 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  overflow: visible;
+  height: calc(1.8125rem + 2px);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  border-radius: 0.25rem;
 `;
 
 Input.defaultProps = {
