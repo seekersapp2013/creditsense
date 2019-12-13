@@ -7,6 +7,7 @@ import Text from '../styled/typography';
 import Input from '../styled/input';
 import Customer from '../models/Customer';
 // import Person from '../models/Person';
+import Menu from '../components/Menu';
 
 
 
@@ -126,6 +127,8 @@ export default class Feed extends React.Component {
   render() {
     return (
       <Flex>
+        
+      <Menu></Menu>
         <Box width={[1, 1 / 2]} mx="auto" textAlign="center">
           <Text.p textAlign="center">
             Create Customer
