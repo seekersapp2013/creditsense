@@ -1,5 +1,5 @@
 {
-  "name": "creditsense",
+  "name": "banter",
   "version": "1.0.0",
   "description": "A demo app built with radiks",
   "main": "index.js",
@@ -23,12 +23,6 @@
     "styled-components": "^3.4.9",
     "styled-system": "^3.1.6"
   },
-  "scripts": {
-  "dev": "next",
-  "build": "next build",
-  "heroku-postbuild": "npm run build",
-  "test": "echo \"Error: no test specified\" && exit 1"
-},
   "devDependencies": {
     "babel-eslint": "^9.0.0",
     "eslint": "^5.6.0",
